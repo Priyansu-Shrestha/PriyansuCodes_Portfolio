@@ -5,6 +5,7 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 
 const PORT = process.env.PORT || 8080;
 const ROOT = __dirname;
@@ -12,26 +13,145 @@ const PRIVATE_DIR = path.join(ROOT, 'private');
 
 function sessionSecret() {
   if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
-  fs.mkdirSync(PRIVATE_DIR, { recursive: true });
-  const file = path.join(PRIVATE_DIR, 'session.secret');
-  if (fs.existsSync(file)) {
-    const saved = fs.readFileSync(file, 'utf8').trim();
-    if (saved) return saved;
+  try {
+    fs.mkdirSync(PRIVATE_DIR, { recursive: true });
+    const file = path.join(PRIVATE_DIR, 'session.secret');
+    if (fs.existsSync(file)) {
+      const saved = fs.readFileSync(file, 'utf8').trim();
+      if (saved) return saved;
+    }
+    const created = crypto.randomBytes(32).toString('hex');
+    fs.writeFileSync(file, created, { mode: 0o600 });
+    return created;
+  } catch (_) {
+    return crypto.randomBytes(32).toString('hex');
   }
-  const created = crypto.randomBytes(32).toString('hex');
-  fs.writeFileSync(file, created, { mode: 0o600 });
-  return created;
 }
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'portfolio_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  charset: 'utf8mb4',
-});
+const PRODUCTION = process.env.NODE_ENV === 'production' || Boolean(process.env.RENDER);
+
+function sslForHost(hostname) {
+  if (!hostname || hostname === 'localhost' || hostname === '127.0.0.1' || !hostname.includes('.')) return false;
+  return { rejectUnauthorized: false };
+}
+
+function createPool() {
+  const databaseUrl = process.env.DATABASE_URL || '';
+  if (databaseUrl.startsWith('postgres')) {
+    const host = new URL(databaseUrl).hostname;
+    const pgPool = new Pool({
+      connectionString: databaseUrl,
+      ssl: sslForHost(host),
+    });
+    return {
+      driver: 'pg',
+      query(sql, params = []) {
+        let n = 0;
+        const text = sql.replace(/\?/g, () => `$${++n}`);
+        return pgPool.query(text, params).then((result) => [result.rows]);
+      },
+      execute(sql, params) {
+        return this.query(sql, params);
+      },
+    };
+  }
+
+  let config;
+  if (databaseUrl.startsWith('mysql')) {
+    const parsed = new URL(databaseUrl);
+    config = {
+      host: parsed.hostname,
+      port: Number(parsed.port || 3306),
+      user: decodeURIComponent(parsed.username),
+      password: decodeURIComponent(parsed.password),
+      database: parsed.pathname.replace(/^\//, ''),
+    };
+    const ssl = sslForHost(parsed.hostname);
+    if (ssl) config.ssl = ssl;
+  } else {
+    config = {
+      host: process.env.MYSQL_HOST || 'localhost',
+      port: Number(process.env.MYSQL_PORT || 3306),
+      user: process.env.MYSQL_USER || 'root',
+      password: process.env.MYSQL_PASSWORD || '',
+      database: process.env.MYSQL_DATABASE || 'portfolio_db',
+    };
+    const ssl = sslForHost(config.host);
+    if (ssl) config.ssl = ssl;
+  }
+  const mysqlPool = mysql.createPool({
+    ...config,
+    waitForConnections: true,
+    connectionLimit: 10,
+    charset: 'utf8mb4',
+  });
+  return { driver: 'mysql', query: mysqlPool.query.bind(mysqlPool), execute: mysqlPool.execute.bind(mysqlPool) };
+}
+
+const pool = createPool();
+
+const MYSQL_SCHEMA = [
+  `CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100),
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE TABLE IF NOT EXISTS projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    description TEXT,
+    image VARCHAR(255),
+    github VARCHAR(255),
+    live_demo VARCHAR(255),
+    technologies VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE TABLE IF NOT EXISTS contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    subject VARCHAR(255),
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+];
+
+const PG_SCHEMA = [
+  `CREATE TABLE IF NOT EXISTS admins (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100),
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE TABLE IF NOT EXISTS projects (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
+    description TEXT,
+    image VARCHAR(255),
+    github VARCHAR(255),
+    live_demo VARCHAR(255),
+    technologies VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE TABLE IF NOT EXISTS contacts (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    subject VARCHAR(255),
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+];
+
+async function ensureSchema() {
+  const statements = pool.driver === 'pg' ? PG_SCHEMA : MYSQL_SCHEMA;
+  for (const sql of statements) await pool.query(sql);
+}
 
 const HOME_FALLBACK = [
   {
@@ -240,6 +360,8 @@ app.use((req, res, next) => {
   next();
 });
 
+if (PRODUCTION) app.set('trust proxy', 1);
+
 app.use(express.json({ limit: '32kb' }));
 app.use(express.urlencoded({ extended: false, limit: '32kb' }));
 app.use(session({
@@ -249,7 +371,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
+    secure: PRODUCTION,
     maxAge: 1000 * 60 * 60 * 8,
   },
 }));
@@ -357,7 +480,7 @@ app.post('/api/admin/logout', (req, res) => {
 
 app.post('/api/admin/setup', async (req, res) => {
   try {
-    if (!isLoopback(req) || await adminExists()) {
+    if (await adminExists()) {
       return res.status(404).json({ ok: false, message: 'Not found.' });
     }
   } catch (err) {
@@ -535,7 +658,7 @@ app.use(async (req, res, next) => {
   const page = req.path.toLowerCase().replace(/\/+$/, '') || '/';
   if (page === '/admin/create-admin' || page === '/admin/create-admin.html') {
     try {
-      if (!isLoopback(req) || await adminExists()) return res.status(404).send('Not found');
+      if (await adminExists()) return res.status(404).send('Not found');
     } catch (err) {
       console.error('Setup page check failed:', err.message);
       return res.status(404).send('Not found');
@@ -561,6 +684,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Portfolio running at http://localhost:${PORT}`);
-});
+ensureSchema()
+  .catch((err) => console.error('Database setup failed:', err.message))
+  .finally(() => {
+    app.listen(PORT, () => {
+      console.log(`Portfolio running at http://localhost:${PORT}`);
+    });
+  });
