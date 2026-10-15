@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="../index.html" class="logo">
+      PriyansuCodes<span>.</span>
+      <small>Full&nbsp;Stack&nbsp;Developer — Rev. 2026</small>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a data-index="01" href="../index.html#home">Home</a></li>
+      <li><a data-index="02" href="../about.html">About</a></li>
+      <li><a data-index="03" href="../projects.html">Projects</a></li>
+      <li><a data-index="04" href="../index.html#skills">Skills</a></li>
+      <li><a data-index="05" href="../contact.html">Contact</a></li>
+      <li><a class="btn-nav" href="../cv.html">Resume</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</nav>
+
+<main class="admin-shell">
+  <div class="admin-card">
+    <div class="corner tl"></div><div class="corner br"></div>
+    <div class="eyebrow">Restricted — Sheet 00</div>
+    <h1>Admin Access</h1>
+    <p class="sub">Sign in to manage projects and inquiries.</p>
+
+    <div id="formMsg"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus autocomplete="username" maxlength="50" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+          <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit">Sign in</button>
+    </form>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-row">
+    <p>&copy; <span data-year>2026</span> Priyansu Shrestha. Built from scratch — Node.js, MySQL &amp; a drafting table.</p>
+  </div>
+</footer>
+
+<script src="../assets/js/script.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "priyansu-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Priyansu Shrestha portfolio — HTML, CSS, and JavaScript frontend with a Node.js and MySQL backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mysql2": "^3.12.0"
+  }
+}

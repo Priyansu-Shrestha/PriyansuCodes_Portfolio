@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Priyansu Shrestha — BSc (Hons) IT student and full stack developer building web applications with PHP, JavaScript, Python and MySQL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="../index.html" class="logo">
+      PriyansuCodes<span>.</span>
+      <small>Full&nbsp;Stack&nbsp;Developer — Rev. 2026</small>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a data-index="01" href="../index.html#home">Home</a></li>
+      <li><a data-index="02" href="../about.html">About</a></li>
+      <li><a data-index="03" href="../projects.html">Projects</a></li>
+      <li><a data-index="04" href="../index.html#skills">Skills</a></li>
+      <li><a data-index="05" href="../contact.html">Contact</a></li>
+      <li><a class="btn-nav" href="../cv.html">Resume</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</nav>
+
+<div class="admin-topbar" id="dashboard">
+  <div class="container">
+    <span class="logo">PriyansuCodes<span>.</span> <small>Admin Panel</small></span>
+    <div class="admin-nav">
+      <span style="color:var(--slate)">Signed in as <span id="adminName"></span></span>
+      <a href="inbox.html">Inbox</a>
+      <a href="../index.html">View site</a>
+      <a href="login.html" id="logoutLink" class="link-danger">Log out</a>
+    </div>
+  </div>
+</div>
+
+<div class="container admin-wrap">
+
+  <div class="eyebrow">Sheet 00 — Control panel</div>
+  <h1 style="font-family:var(--font-display);font-size:2rem;margin-bottom:36px">Dashboard</h1>
+
+  <div class="admin-stats">
+    <div><b id="contactCount">0</b><span>Total inquiries</span></div>
+    <div><b id="projectCount">0</b><span>Projects listed</span></div>
+    <div><b id="periodLabel"></b><span>Current period</span></div>
+  </div>
+
+  <div class="sheet-head">
+    <h2>Inquiries</h2>
+    <div class="sheet-no">Latest 15<br><b><a href="inbox.html" style="color:var(--copper)">Open full inbox →</a></b></div>
+  </div>
+
+  <p id="noMessages" style="color:var(--slate);margin-bottom:60px" hidden>No messages yet.</p>
+  <div id="messageTable" style="overflow-x:auto;margin-bottom:70px" hidden>
+    <table class="data-table">
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Received</th><th></th></tr>
+      </thead>
+      <tbody id="messageBody"></tbody>
+    </table>
+  </div>
+
+  <div class="sheet-head">
+    <h2>Projects</h2>
+    <div class="sheet-no">Manage listing<br><b>Add / remove</b></div>
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:40px">
+    <table class="data-table">
+      <thead>
+        <tr><th>Title</th><th>Technologies</th><th>Added</th><th></th></tr>
+      </thead>
+      <tbody id="projectBody">
+        <tr><td colspan="4" style="color:var(--slate)">No projects added yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="admin-card" style="max-width:640px;margin:0">
+    <h1 style="font-size:1.2rem;text-align:left">Add a project</h1>
+    <p class="sub" style="text-align:left;margin-bottom:22px">Appears immediately on the public Projects page.</p>
+    <div id="projectMsg"></div>
+    <form id="projectForm">
+      <div class="field"><label for="title">Title</label><input type="text" id="title" name="title" required></div>
+      <div class="field"><label for="description">Description</label><textarea id="description" name="description" required></textarea></div>
+      <div class="field"><label for="technologies">Technologies (comma separated)</label><input type="text" id="technologies" name="technologies" placeholder="PHP, MySQL, JS" required></div>
+      <div class="form-row">
+        <div class="field"><label for="github">GitHub URL</label><input type="url" id="github" name="github" placeholder="https://github.com/..."></div>
+        <div class="field"><label for="live_demo">Live demo URL</label><input type="url" id="live_demo" name="live_demo" placeholder="https://..."></div>
+      </div>
+      <button type="submit">Add project</button>
+    </form>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container footer-row">
+    <p>&copy; <span data-year>2026</span> Priyansu Shrestha. Built from scratch — Node.js, MySQL &amp; a drafting table.</p>
+    <a href="login.html">Admin</a>
+  </div>
+</footer>
+
+<script src="../assets/js/script.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

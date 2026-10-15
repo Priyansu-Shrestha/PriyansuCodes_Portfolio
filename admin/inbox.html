@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inbox — Admin</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="../index.html" class="logo">
+      PriyansuCodes<span>.</span>
+      <small>Full&nbsp;Stack&nbsp;Developer — Rev. 2026</small>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a data-index="01" href="../index.html#home">Home</a></li>
+      <li><a data-index="02" href="../about.html">About</a></li>
+      <li><a data-index="03" href="../projects.html">Projects</a></li>
+      <li><a data-index="04" href="../index.html#skills">Skills</a></li>
+      <li><a data-index="05" href="../contact.html">Contact</a></li>
+      <li><a class="btn-nav" href="../cv.html">Resume</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</nav>
+
+<div class="admin-topbar" id="inbox">
+  <div class="container">
+    <span class="logo">PriyansuCodes<span>.</span> <small>Private inbox</small></span>
+    <div class="admin-nav">
+      <span style="color:var(--slate)">Signed in as <span id="adminName"></span></span>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="../index.html">View site</a>
+      <a href="login.html" id="logoutLink" class="link-danger">Log out</a>
+    </div>
+  </div>
+</div>
+
+<div class="container admin-wrap">
+  <div class="eyebrow">Sheet 00.1 — Restricted</div>
+  <h1 style="font-family:var(--font-display);font-size:2rem;margin-bottom:10px">Inbox</h1>
+  <p style="color:var(--slate);margin-bottom:28px;max-width:62ch">Messages sent from the contact form. This page only loads after you sign in.</p>
+
+  <div class="inbox-layout">
+    <aside class="inbox-list">
+      <input class="inbox-search" id="inboxSearch" type="search" placeholder="Search name, email, or subject" aria-label="Search messages">
+      <p id="inboxEmpty" style="color:var(--slate)" hidden>No messages yet.</p>
+      <div id="inboxItems"></div>
+    </aside>
+    <article class="inbox-reader" id="inboxReader">
+      <p class="sub" style="text-align:left;margin:0">Select a message to read it.</p>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <div class="container footer-row">
+    <p>&copy; <span data-year>2026</span> Priyansu Shrestha. Built from scratch — Node.js, MySQL &amp; a drafting table.</p>
+    <a href="login.html">Admin</a>
+  </div>
+</footer>
+
+<script src="../assets/js/script.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Admin Account</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Priyansu Shrestha — BSc (Hons) IT student and full stack developer building web applications with PHP, JavaScript, Python and MySQL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="../index.html" class="logo">
+      PriyansuCodes<span>.</span>
+      <small>Full&nbsp;Stack&nbsp;Developer — Rev. 2026</small>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a data-index="01" href="../index.html#home">Home</a></li>
+      <li><a data-index="02" href="../about.html">About</a></li>
+      <li><a data-index="03" href="../projects.html">Projects</a></li>
+      <li><a data-index="04" href="../index.html#skills">Skills</a></li>
+      <li><a data-index="05" href="../contact.html">Contact</a></li>
+      <li><a class="btn-nav" href="../cv.html">Resume</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</nav>
+
+<main class="admin-shell">
+  <div class="admin-card">
+    <div class="corner tl"></div><div class="corner br"></div>
+    <div class="eyebrow">Setup — Run once</div>
+    <h1>Create Admin Account</h1>
+    <p class="sub">Delete this file once you're done.</p>
+
+    <div id="formMsg"></div>
+    <form id="setupForm">
+      <div class="field"><label for="full_name">Full name</label><input type="text" id="full_name" name="full_name" required></div>
+      <div class="field"><label for="username">Username</label><input type="text" id="username" name="username" required></div>
+      <div class="field"><label for="email">Email</label><input type="email" id="email" name="email"></div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input type="password" id="password" name="password" required minlength="10" autocomplete="new-password" aria-describedby="passwordHint">
+          <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+        <p id="passwordHint" class="password-hint">At least 10 characters, with uppercase, lowercase, and a number.</p>
+      </div>
+      <button type="submit">Save admin account</button>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-row">
+    <p>&copy; <span data-year>2026</span> Priyansu Shrestha. Built from scratch — Node.js, MySQL &amp; a drafting table.</p>
+    <a href="login.html">Admin</a>
+  </div>
+</footer>
+
+<script src="../assets/js/script.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

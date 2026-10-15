@@ -1,0 +1,18 @@
+Options -Indexes
+ServerSignature Off
+
+<FilesMatch "(?i)^(server\.js|package\.json|package-lock\.json|portfolio\.sql|README\.md|\.gitignore|\.htaccess)$">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "(?i)\.(sql|env|log|md)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule (^|/)\. - [F]
+  RewriteRule ^private(/|$) - [F,L]
+  RewriteRule ^node_modules(/|$) - [F,L]
+  RewriteRule ^admin/create-admin\.html$ - [F,L]
+</IfModule>
